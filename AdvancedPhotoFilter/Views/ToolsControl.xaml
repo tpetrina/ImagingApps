@@ -1,0 +1,107 @@
+﻿<UserControl x:Class="AdvancedPhotoFilter.Views.ToolsControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:core="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions"
+             mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    d:DesignHeight="480" d:DesignWidth="480">
+
+    <Grid x:Name="LayoutRoot"
+          HorizontalAlignment="Stretch" VerticalAlignment="Top"
+          Background="#A0000000">
+        <Grid.RenderTransform>
+            <CompositeTransform TranslateY="-100"/>
+        </Grid.RenderTransform>
+        <i:Interaction.Behaviors>
+            <core:DataStateBehavior TrueState="ShowToolsOverlay"
+                                        FalseState="HideToolsOverlay"
+                                        Value="True"
+                                        Binding="{Binding IsShown}"/>
+        </i:Interaction.Behaviors>
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <core:GoToStateAction StateName="HideToolsOverlay"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualState x:Name="ShowToolsOverlay">
+                    <Storyboard>
+                        <DoubleAnimation Duration="0:0:1"
+                                         From="-100" To="0"
+                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+                                         Storyboard.TargetName="LayoutRoot"
+                                         d:IsOptimized="True">
+                            <DoubleAnimation.EasingFunction>
+                                <PowerEase Power="6" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </VisualState>
+                <VisualState x:Name="HideToolsOverlay">
+                    <Storyboard>
+                        <DoubleAnimation Duration="0:0:1"
+                                         From="0" To="-100"
+                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)"
+                                         Storyboard.TargetName="LayoutRoot"
+                                         d:IsOptimized="True">
+                            <DoubleAnimation.EasingFunction>
+                                <PowerEase Power="6" />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                    </Storyboard>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Border>
+            <StackPanel Margin="0,0,0,12">
+                <TextBlock Text="select your tool:"
+                        Style="{StaticResource PhoneTextNormalStyle}"/>
+                <ListBox x:Name="toolsList" Margin="0,12"
+                         ItemsSource="{Binding ToolItems}"
+                        SelectionChanged="toolsList_SelectionChanged"
+                             Height="60">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="12,12,0,0">
+                                <Border BorderThickness="0.5" BorderBrush="WhiteSmoke"
+                                        Width="48" Height="48">
+                                    <Rectangle Fill="{StaticResource PhoneAccentBrush}" Width="48" Height="48">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="{Binding Image}" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </Border>
+                                <TextBlock Style="{StaticResource PhoneTextSmallStyle}"
+                                        Text="{Binding Name}"
+                                        HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
+
+        <TextBlock Text="˙ ˙ ˙" Margin="12,12,0,0"
+                       x:Name="txtBlock"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Stretch"
+                       Tap="rectTools_Tap" MouseMove="rectTools_MouseMove">
+            <TextBlock.RenderTransform>
+                <CompositeTransform TranslateY="10"/>
+            </TextBlock.RenderTransform>
+        </TextBlock>
+    </Grid>
+</UserControl>

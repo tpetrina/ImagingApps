@@ -1,0 +1,166 @@
+﻿<phone:PhoneApplicationPage
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:controls="clr-namespace:Coding4Fun.Toolkit.Controls;assembly=Coding4Fun.Toolkit.Controls"
+    xmlns:converters="clr-namespace:Coding4Fun.Toolkit.Controls.Converters;assembly=Coding4Fun.Toolkit.Controls"
+    xmlns:views="clr-namespace:AdvancedPhotoFilter.Views"
+    x:Class="AdvancedPhotoFilter.Views.MainPage"
+    mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Landscape" Orientation="Landscape"
+    shell:SystemTray.IsVisible="False">
+
+    <phone:PhoneApplicationPage.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </phone:PhoneApplicationPage.Resources>
+
+    <Grid x:Name="LayoutRoot" Background="#aa4a525a">
+
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="0,12,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Grid x:Name="_imageWrapper" Margin="12">
+                <Image x:Name="_mainImage"
+                    Source="{Binding MainImage}"
+                    ManipulationStarted="Img_OnManipulationStarted"
+                    ManipulationDelta="Img_OnManipulationDelta"
+                    ManipulationCompleted="Img_OnManipulationCompleted" />
+                <Rectangle Visibility="{Binding IsWorking,Converter={StaticResource BooleanToVisibilityConverter}}"
+                           Fill="#DD999999"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch" />
+                <ProgressBar IsIndeterminate="{Binding IsWorking}"
+                             Visibility="{Binding IsWorking,Converter={StaticResource BooleanToVisibilityConverter}}"
+                             Height="24"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Stretch"/>
+            </Grid>
+
+            <Grid Grid.Column="1" Grid.RowSpan="2" Margin="12,12,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="filtered image:"
+                    Style="{StaticResource PhoneTextSmallStyle}"/>
+                <Image Source="{Binding PreviewImage}"
+                    Grid.Row="1"
+                    Width="100" Height="100" />
+
+                <TextBlock Text="filter"
+                           Grid.Row="2"
+                           Style="{StaticResource PhoneTextSmallStyle}" />
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="3" Margin="0,12,0,12">
+                    <controls:RoundButton ImageSource="/Assets/AppBar/ArrowHead-Left.png"
+                                          toolkit:TiltEffect.IsTiltEnabled="True"
+                                          Command="{Binding PreviousFilterCommand}"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,0,0" Padding="0" />
+                    <toolkit:ListPicker Width="140" Margin="0,-14,0,0"
+                                        VerticalAlignment="Center"
+                                        ItemsSource="{Binding Filters}"
+                                        SelectedItem="{Binding SelectedFilter, Mode=TwoWay}">
+                        <toolkit:ListPicker.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"
+                                    Style="{StaticResource PhoneTextNormalStyle}" />
+                            </DataTemplate>
+                        </toolkit:ListPicker.ItemTemplate>
+                        <toolkit:ListPicker.FullModeItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"
+                                    Style="{StaticResource PhoneTextLargeStyle}" />
+                            </DataTemplate>
+                        </toolkit:ListPicker.FullModeItemTemplate>
+                    </toolkit:ListPicker>
+                    <controls:RoundButton ImageSource="/Assets/AppBar/ArrowHead-Right.png"
+                        Command="{Binding NextFilterCommand}"
+                        VerticalAlignment="Center"
+                        Margin="0" Padding="0" />
+                </StackPanel>
+
+                <TextBlock Text="blend function"
+                    Grid.Row="4"
+                    Style="{StaticResource PhoneTextSmallStyle}" />
+                <StackPanel Orientation="Horizontal"
+                    Grid.Row="5" Margin="0,14,0,0">
+                    <controls:RoundButton ImageSource="/Assets/AppBar/ArrowHead-Left.png"
+                                          toolkit:TiltEffect.IsTiltEnabled="True"
+                        Command="{Binding PreviousBlendFunctionCommand}"
+                        Margin="0" Padding="0" />
+                    <toolkit:ListPicker HorizontalAlignment="Stretch"
+                        Margin="0,-14,0,0" Width="140"
+                        ItemsSource="{Binding BlendFunctions}"
+                        SelectedItem="{Binding SelectedBlendFunction, Mode=TwoWay}"/>
+
+                    <controls:RoundButton ImageSource="/Assets/AppBar/ArrowHead-Right.png"
+                                          toolkit:TiltEffect.IsTiltEnabled="True"
+                        Command="{Binding NextBlendFunctionCommand}" />
+                </StackPanel>
+
+                <Slider Minimum="0" Maximum="255"
+                    Value="{Binding Grayscale, Mode=TwoWay}"
+                    Grid.Row="6" />
+                <Slider Minimum="0" Maximum="255"
+                    Value="{Binding Grayscale2, Mode=TwoWay}"
+                    Grid.Row="7" />
+            </Grid>
+
+            <StackPanel Grid.Row="1"
+                Orientation="Horizontal" Margin="32,0,0,12">
+
+                <controls:RoundButton ImageSource="/Assets/AppBar/Select.png"
+                                      toolkit:TiltEffect.IsTiltEnabled="True"
+                                      VerticalAlignment="Center" Margin="0"
+                                      Command="{Binding ChooseCommand}" />
+                <controls:RoundButton ImageSource="/Assets/AppBar/Check.png"
+                                      toolkit:TiltEffect.IsTiltEnabled="True"
+                                      VerticalAlignment="Center" Margin="0"
+                                      Command="{Binding ApplyCommand}" />
+                <controls:RoundButton ImageSource="/Assets/AppBar/Delete.png"
+                                      toolkit:TiltEffect.IsTiltEnabled="True"
+                                      VerticalAlignment="Center" Margin="0"
+                                      Command="{Binding UndoCommand}" />
+                <controls:RoundButton ImageSource="/Assets/AppBar/share.png"
+                                      toolkit:TiltEffect.IsTiltEnabled="True"
+                                      VerticalAlignment="Center" Margin="0"
+                                      Command="{Binding ShareCommand}" />
+                <controls:RoundButton ImageSource="/Assets/AppBar/save.png"
+                                      toolkit:TiltEffect.IsTiltEnabled="True"
+                                      VerticalAlignment="Center" Margin="0"
+                                      Command="{Binding SaveCommand}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                Grid.Column="1" Grid.RowSpan="2"
+                VerticalAlignment="Bottom"/>
+        </Grid>
+
+        <views:ToolsControl x:Name="Tools" />
+    </Grid>
+
+</phone:PhoneApplicationPage>
